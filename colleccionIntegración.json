@@ -1,0 +1,657 @@
+{
+  "info": {
+    "_postman_id": "bioruta-collection-complete",
+    "name": "BioRuta API Complete - All Endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Registro",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"nombreCompleto\": \"Test Usuario\",\n  \"email\": \"usuariotest@alumnos.ubiobio.cl\",\n  \"password\": \"admin1234\",\n  \"rol\": \"estudiante\",\n  \"carrera\": \"Ingeniería Civil\",\n  \"fechaNacimiento\": \"2000-01-01\",\n  \"genero\": \"masculino\",\n  \"rut\": \"12.999.999-K\"\n}"},
+            "url": {"raw": "http://146.83.198.35:1245/api/auth/register", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "auth", "register"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 201, 400 or 409\", function () {",
+                  "  pm.expect([200,201,400,409]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.test(\"Response has data\", function () {",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"usuario1@alumnos.ubiobio.cl\",\n  \"password\": \"admin1234\"\n}"},
+            "url": {"raw": "http://146.83.198.35:1245/api/auth/login", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "auth", "login"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  var jsonData = pm.response.json();",
+                  "  if (jsonData.data && jsonData.data.token) {",
+                  "    pm.environment.set(\"token\", jsonData.data.token);",
+                  "    console.log('Token guardado:', jsonData.data.token);",
+                  "  } else {",
+                  "    console.log('No se encontró token en la respuesta:', JSON.stringify(jsonData));",
+                  "  }",
+                  "} else {",
+                  "  console.log('Login falló, código:', pm.response.code);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Usuario",
+      "item": [
+        {
+          "name": "Listar Usuarios",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/user/", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "user", ""]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.test(\"Response has data\", function () {",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener Detalle Usuario",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/user/detail/", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "user", "detail", ""]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.test(\"Response has data\", function () {",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Buscar Usuario",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/user/busqueda?search=test", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "user", "busqueda"], "query": [{"key": "search", "value": "test"}]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.test(\"Response has data\", function () {",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Buscar por RUT",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/user/busquedaRut?rut=12.345.678-9", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "user", "busquedaRut"], "query": [{"key": "rut", "value": "12.345.678-9"}]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400, 401 or 404\", function () {",
+                  "  pm.expect([200,400,401,404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar Usuario",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"nombreCompleto\": \"Usuario Actualizado\",\n  \"telefono\": \"+56987654321\"\n}"},
+            "url": {"raw": "http://146.83.198.35:1245/api/user/actualizar", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "user", "actualizar"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mis Vehículos",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/user/mis-vehiculos", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "user", "mis-vehiculos"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Historial Transacciones",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/user/historial-transacciones", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "user", "historial-transacciones"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Calificar Usuario",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"rutCalificado\": \"12.345.678-9\",\n  \"estrellas\": 5,\n  \"comentario\": \"Excelente conductor\"\n}"},
+            "url": {"raw": "http://146.83.198.35:1245/api/user/calificar", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "user", "calificar"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 201, 400 or 401\", function () {",
+                  "  pm.expect([200,201,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vehículos",
+      "item": [
+        {
+          "name": "Crear Vehículo",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"patente\": \"AB1234\",\n  \"tipo\": \"sedan\",\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Corolla\",\n  \"año\": 2024,\n  \"color\": \"Blanco\",\n  \"nro_asientos\": 5,\n  \"tipoCombustible\": \"bencina\",\n  \"documentacion\": \"Revisión técnica y permiso de circulación al día.\"\n}"},
+            "url": {"raw": "http://146.83.198.35:1245/api/vehiculos/crear", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "vehiculos", "crear"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 201, 400 or 401\", function () {",
+                  "  pm.expect([200,201,400,401]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.test(\"Response has data\", function () {",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Viajes",
+      "item": [
+        {
+          "name": "Crear Viaje",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"ubicaciones\": [{\"displayName\": \"Campus UBB Concepción\", \"lat\": -36.826, \"lon\": -73.050, \"esOrigen\": true}, {\"displayName\": \"Terminal Collao\", \"lat\": -36.810, \"lon\": -73.055, \"esOrigen\": false}],\n  \"fechaHoraIda\": \"2025-08-03T10:00:00.000Z\",\n  \"viajeIdaYVuelta\": false,\n  \"maxPasajeros\": 4,\n  \"soloMujeres\": false,\n  \"flexibilidadSalida\": \"± 5 minutos\",\n  \"precio\": 2500,\n  \"plazasDisponibles\": 4,\n  \"comentarios\": \"\",\n  \"vehiculoPatente\": \"AB1234\"\n}"},
+            "url": {"raw": "http://146.83.198.35:1245/api/viajes/crear", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "viajes", "crear"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 201, 400 or 401\", function () {",
+                  "  pm.expect([200,201,400,401]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.test(\"Response has data\", function () {",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "  });",
+                  "  if (jsonData.data && jsonData.data._id) {",
+                  "    pm.environment.set(\"viajeId\", jsonData.data._id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Buscar Viajes por Proximidad",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/viajes/buscar?lat=-36.826&lon=-73.050&radio=5000", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "viajes", "buscar"], "query": [{"key": "lat", "value": "-36.826"}, {"key": "lon", "value": "-73.050"}, {"key": "radio", "value": "5000"}]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mis Viajes",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/viajes/mis-viajes", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "viajes", "mis-viajes"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Viajes para Mapa",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/viajes/mapa?lat=-36.826&lon=-73.050&radio=10000", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "viajes", "mapa"], "query": [{"key": "lat", "value": "-36.826"}, {"key": "lon", "value": "-73.050"}, {"key": "radio", "value": "10000"}]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Precio Sugerido",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"origen\": {\"lat\": -36.826, \"lon\": -73.050},\n  \"destino\": {\"lat\": -36.810, \"lon\": -73.055}\n}"},
+            "url": {"raw": "http://146.83.198.35:1245/api/viajes/precio-sugerido", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "viajes", "precio-sugerido"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Radar de Viajes",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"lat\": -36.826,\n  \"lon\": -73.050,\n  \"radio\": 5000\n}"},
+            "url": {"raw": "http://146.83.198.35:1245/api/viajes/radar", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "viajes", "radar"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chat",
+      "item": [
+        {
+          "name": "Enviar Mensaje",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"rutDestinatario\": \"12.345.678-9\",\n  \"contenido\": \"Hola, ¿cómo estás?\",\n  \"tipo\": \"personal\"\n}"},
+            "url": {"raw": "http://146.83.198.35:1245/api/chat/mensaje", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "chat", "mensaje"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 201, 400 or 401\", function () {",
+                  "  pm.expect([200,201,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener Conversación",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/chat/conversacion/12.345.678-9", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "chat", "conversacion", "12.345.678-9"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mis Chats",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/chat/mis-chats", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "chat", "mis-chats"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Amistad",
+      "item": [
+        {
+          "name": "Enviar Solicitud de Amistad",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"rutReceptor\": \"13.456.789-K\",\n  \"mensaje\": \"Hola, ¿aceptas mi solicitud de amistad?\"\n}"},
+            "url": {"raw": "http://146.83.198.35:1245/api/amistad/solicitud", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "amistad", "solicitud"]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 201, 400 or 401\", function () {",
+                  "  pm.expect([200,201,400,401]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.test(\"Response has data\", function () {",
+                  "      pm.expect(jsonData).to.have.property('data');",
+                  "    });",
+                  "  }"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Contactos de Emergencia",
+      "item": [
+        {
+          "name": "Crear Contacto de Emergencia",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"telefono\": \"+56912345678\",\n  \"email\": \"juan.perez@alumnos.ubiobio.cl\"\n}"},
+            "url": {"raw": "http://146.83.198.35:1245/api/contactos-emergencia/", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "contactos-emergencia", ""]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 201, 400 or 401\", function () {",
+                  "  pm.expect([200,201,400,401]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.test(\"Response has data\", function () {",
+                  "      pm.expect(jsonData).to.have.property('data');",
+                  "    });",
+                  "  }"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Notificaciones",
+      "item": [
+        {
+          "name": "Obtener Notificaciones",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/notificaciones/", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "notificaciones", ""]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ranking",
+      "item": [
+        {
+          "name": "Obtener Ranking",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/ranking/", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "ranking", ""]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Peticiones de Supervisión",
+      "item": [
+        {
+          "name": "Obtener Peticiones de Supervisión",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://146.83.198.35:1245/api/peticiones-supervision/", "protocol": "http", "host": ["146.83.198.35"], "port": "1245", "path": ["api", "peticiones-supervision", ""]}
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200, 400 or 401\", function () {",
+                  "  pm.expect([200,400,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
